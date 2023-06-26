@@ -6,6 +6,7 @@ const (
 	EventTypePlayerLeave    string = "PlayerLeave"
 	EventTypeContainerStart string = "ContainerStart"
 	EventTypeContainerStop  string = "ContainerStop"
+  EventTypeServerClosed   string = "ServerClosed"
 )
 
 type Event interface {
@@ -58,3 +59,14 @@ type ContainerStopEvent struct {
 func (event ContainerStopEvent) EventType() string {
 	return EventTypeContainerStop
 }
+
+type ServerClosedEvent struct {
+	ProxyUID string `json:"proxyUid"`
+  RemoteAddress string `json:"remoteAddress"`
+  TargetAddress string `json:"targetAddress"`
+}
+
+func (event ServerClosedEvent) EventType() string {
+	return EventTypeServerClosed
+}
+

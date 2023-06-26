@@ -210,9 +210,16 @@ func (proxy *Proxy) handleConn(conn Conn, connRemoteAddr net.Addr) error {
 		return err
 	}
 
+	var username string
 	rconn, err := dialer.Dial(proxyTo)
 	if err != nil {
 		log.Printf("[i] %s did not respond to ping; is the target offline?", proxyTo)
+    proxy.logEvent(callback.ServerClosedEvent{
+			RemoteAddress: connRemoteAddr.String(),
+			TargetAddress: proxyTo,
+			ProxyUID:      proxyUID,
+		})
+
 		if hs.IsStatusRequest() {
 			return proxy.handleStatusRequest(conn, false)
 		}
@@ -257,7 +264,6 @@ func (proxy *Proxy) handleConn(conn Conn, connRemoteAddr net.Addr) error {
 		return err
 	}
 
-	var username string
 	connected := false
 	if hs.IsLoginRequest() {
 		proxy.cancelProcessTimeout()
